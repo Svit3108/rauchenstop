@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { LanguageProvider } from './contexts/LanguageContext';
 import Header from './components/Header';
 import Contents from './components/Contents';
 import Footer from './components/Footer';
@@ -9,6 +10,7 @@ import About from './pages/About';
 
 const App = () => {
   return (
+    <LanguageProvider>
     <Router>
       <Header />
       <Contents />
@@ -21,6 +23,7 @@ const App = () => {
         <Footer />
       </div>
     </Router>
+    </LanguageProvider>
   );
 };
 
