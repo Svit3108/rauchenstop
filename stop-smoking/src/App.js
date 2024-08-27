@@ -20,8 +20,8 @@ const App = () => {
           <Route path="/content" element={<Content />} />
           <Route path="/about" element={<About />} />
         </Routes>
-        <Footer />
       </div>
+      <Footer />
     </Router>
     </LanguageProvider>
   );

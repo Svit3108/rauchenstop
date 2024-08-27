@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
-import { useSpring, animated } from '@react-spring/web';
+import { useSpring, animated, useTransition } from '@react-spring/web';
 
 const Home = () => {
   const [language, setLanguage] = useState('de');
-  const animation = useSpring({ opacity: 1, from: { opacity: 0 }, config: { duration: 1000 } });
+
+  // Animation for the entire page load
+  const pageAnimation = useSpring({ opacity: 1, from: { opacity: 0 }, config: { duration: 1000 } });
+
+  // Animation for content change when language switches
+  const contentTransition = useTransition(language, {
+    from: { opacity: 0, transform: 'translateY(10px)' },
+    enter: { opacity: 1, transform: 'translateY(0px)' },
+    leave: { opacity: 0, transform: 'translateY(-10px)' },
+    config: { duration: 500 },
+  });
 
   const content = {
     de: {
@@ -63,7 +73,50 @@ const Home = () => {
   const currentContent = content[language];
 
   return (
-    <animated.div style={animation} className="p-8 md:p-16 bg-gradient-to-r from-green-200 via-yellow-100 to-red-200 min-h-screen flex flex-col items-center">
+    <animated.div style={pageAnimation} className="p-8 md:p-16 bg-gradient-to-r from-green-200 via-yellow-100 to-red-200 min-h-screen flex flex-col items-center">
+
+      {contentTransition((style, item) => 
+        item === language ? (
+          <animated.div style={style} key={item} className="flex flex-col items-center">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-6 text-gray-800">
+              {currentContent.welcome}
+            </h1>
+            
+            <img 
+              src="/path/to/smoking-image.jpg" 
+              alt="Stop Smoking" 
+              className="mb-8 w-full max-w-md h-auto rounded-lg shadow-lg border-4 border-green-300"
+            />
+
+            <p className="text-lg md:text-xl text-center mb-8 text-gray-700 max-w-3xl">
+              {currentContent.mission}
+            </p>
+
+            <div className="w-full max-w-md h-auto mb-8 rounded-lg shadow-lg border-4 border-yellow-300">
+              <iframe
+                width="100%"
+                height="315"
+                src="https://www.youtube.com/embed/o3I0mJ2RfU0"
+                title={currentContent.videoTitle}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="rounded-lg"
+              ></iframe>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">{currentContent.dangers}</h2>
+              <ul className="list-disc list-inside text-gray-700">
+                {currentContent.points.map((point, index) => (
+                  <li key={index}>{point}</li>
+                ))}
+              </ul>
+            </div>
+          </animated.div>
+        ) : null
+      )}
+
       <select
         className="mb-4 p-2 border rounded"
         value={language}
@@ -74,46 +127,11 @@ const Home = () => {
         <option value="fr">Français</option>
         <option value="ua">Українська</option>
       </select>
-
-      <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-6 text-gray-800">
-        {currentContent.welcome}
-      </h1>
-      
-      <img 
-        src="/path/to/smoking-image.jpg" 
-        alt="Stop Smoking" 
-        className="mb-8 w-full max-w-md h-auto rounded-lg shadow-lg border-4 border-green-300"
-      />
-
-      <p className="text-lg md:text-xl text-center mb-8 text-gray-700 max-w-3xl">
-        {currentContent.mission}
-      </p>
-
-      <div className="w-full max-w-md h-auto mb-8 rounded-lg shadow-lg border-4 border-yellow-300">
-        <iframe
-          width="100%"
-          height="315"
-          src="https://www.youtube.com/embed/o3I0mJ2RfU0"
-          title={currentContent.videoTitle}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="rounded-lg"
-        ></iframe>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">{currentContent.dangers}</h2>
-        <ul className="list-disc list-inside text-gray-700">
-          {currentContent.points.map((point, index) => (
-            <li key={index}>{point}</li>
-          ))}
-        </ul>
-      </div>
     </animated.div>
   );
 };
 
 export default Home;
+
 
 

@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -30,7 +30,10 @@ jobs:
     - name: Build
       run: npm run build
 
-    - name: Deploy
+    - name: Install Netlify CLI
+      run: npm install netlify-cli -g
+
+    - name: Deploy to Netlify
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-      run: npm install netlify-cli -g && netlify deploy --prod
+      run: netlify deploy --prod --dir=build
